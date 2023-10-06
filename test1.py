@@ -4,6 +4,8 @@ import math
 import numpy as np
 import cvzone
 
+import serial
+
 # Webcam
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # cv2.CAP_DSHOW for faster loading
 cap.set(3, 960)  # width
