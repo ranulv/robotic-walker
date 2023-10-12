@@ -4,6 +4,13 @@ import math
 import numpy as np
 import cvzone
 
+import pyfirmata
+import time
+
+if __name__ == '__main__':
+    board = pyfirmata.Arduino('COM10')
+    print("Communication Successfully started")
+
 # Webcam
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # cv2.CAP_DSHOW for faster loading
 cap.set(3, 960)  # width
@@ -40,7 +47,19 @@ while True:
         A, B, C = coff
         distanceCM = A * distance ** 2 + B * distance + C
 
-        print(distanceCM, distance)
+        if distanceCM>30:
+            board.digital[13].write(1)
+            #time.sleep(1)
+            board.digital[13].write(0)
+            #time.sleep(1)
+
+        else:
+            board.digital[13].write(1)
+            #time.sleep(1)
+            board.digital[13].write(0)
+            #time.sleep(1)
+
+        #print(distanceCM, distance)
 
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 3)
         cvzone.putTextRect(img, f'{int(distanceCM)} cm', (x+5, y-10))
@@ -54,3 +73,5 @@ while True:
 # Release the video capture object and close all windows
 cap.release()
 cv2.destroyAllWindows()
+
+        

@@ -2,7 +2,7 @@ import serial
 import time
 
 # Define the serial port (change this to match your Arduino's port)
-serial_port = 'COM11'  # On Linux, it might look like this '/dev/ttyUSB0'
+serial_port = 'COM10'  # On Linux, it might look like this '/dev/ttyUSB0'
 # For Windows, it may look like: 'COM1'
 
 # Define the baud rate to match the Arduino sketch

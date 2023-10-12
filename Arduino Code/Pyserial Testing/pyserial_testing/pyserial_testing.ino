@@ -10,15 +10,16 @@ void setup() {
 
 void loop() {
     if (Serial.available() > 0) {
-        char command = Serial.read();
-        // Process the command here
-        if (command == 'A') {
-            Serial.println("not B");
-            
-        } else if (command == 'B') {
-            Serial.println("not A");
-
+        float command = Serial.read();
+        if (command>10){
+          digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+          delay(10000);                       // wait for a second
+          digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+          delay(1000);                       // wait for a second   
+          digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+          delay(10000);                       // wait for a second
+          digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+          delay(1000);                       // wait for a second   
         }
-        // Add more commands as needed
     }
 }
