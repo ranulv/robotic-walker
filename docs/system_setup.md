@@ -8,7 +8,7 @@ alias python='python3'
 source ~/.bashrc
 
 -----------------------------------------------------------------------------------------------
-# Install python3.7 and create virtual environment
+### Install python3.7 and create virtual environment
 
 # Add the deadsnakes PPA to your system:
 sudo add-apt-repository ppa:deadsnakes/ppa
@@ -38,7 +38,8 @@ ls /usr/bin/python*
 sudo apt install python3-pip)
 
 -----------------------------------------------------------------------------------------------
-# Install ROS Noetic - https://www.youtube.com/watch?v=UGHE7HyzRXw
+### Install ROS Noetic - https://www.youtube.com/watch?v=UGHE7HyzRXw
+
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt install curl
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
@@ -60,14 +61,79 @@ rosdep update
 4/ rostopic list
 
 ----------------------------------
-# Install Arduino IDE
-https://docs.arduino.cc/software/ide-v1/tutorials/Linux
+### Install Arduino IDE - https://docs.arduino.cc/software/ide-v1/tutorials/Linux
+
 navigate to extracted directory
 sudo sh install.sh
 sudo usermod -a -G dialout ranulv
-log out and log in again for this change to take effect.
+log out and log in again for this change to take effect
 
-# Install ROS packages for Arduino
+# Install ROS packages for Arduino - https://www.youtube.com/watch?v=9qZUjEsVWts&t=6s
+
 sudo apt install ros-noetic-rosserial
 sudo apt install ros-noetic-rosserial-arduino
 sudo apt install ros-noetic-rosserial-python
+
+install rosserial library in Arduino IDE
+
+# Verify
+run HelloWorld example in rosserial library
+to rectify error edit msg.h in src/ros/
+string.h instead of cstring
+remove std:: infront of memcpy
+
+1/ roscore
+2/ sudo chmod 666 /dev/ttyACM0
+   rosrun rosserial_python serial_node.py /dev/ttyACM0
+3/ rostopic list
+   rostopic echo /chatter
+
+
+-------------------------------------------------------------
+### Setup ROS & OpenCV - https://www.youtube.com/watch?v=rfwHAYAUm_w
+.py code from - https://automaticaddison.com/working-with-ros-and-opencv-in-ros-noetic/
+tutorial at - http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython
+
+(ls /dev/ | grep video 			# should display video0)
+sudo apt install ros-noetic-usb-cam
+sudo apt install ros-noetic-perception
+
+# check .bashrc for source optros/noetic/setup.bash
+
+# create workspace
+mkdir -p ~/ros_open_cv_ws/src
+cd ros_open_cv_ws/
+catkin_make
+source ~/ros_open_cv_ws/devel/setup.bash
+echo $ROS_PACKAGE_PATH 	# should return the ws/src
+
+#create catkin package
+cd ~/ros_open_cv_ws/src
+catkin_create_pkg ros_opencv image_transport cv_bridge sensor_msgs rospy roscpp std_msgs
+cd ~/ros_open_cv_ws/src/ros_opencv
+mkdir python_script
+cd python_script
+gedit camera_publisher.py
+chmod +x camera_publisher.py
+gedit camera_subscriber.py
+chmod +x camera_subscriber.py
+
+# edit CMakeLists.txt
+cd ~/ros_open_cv_ws/src/ros_opencv
+gedit CMakeLists.txt
+catkin_install_python(PROGRAMS
+	python_script/camera_publisher.py
+	python_script/camera_subscriber.py …….)
+
+cd ros_open_cv_ws
+catkin_make
+
+1/ roscore
+2/ source ~/ros_open_cv_ws/devel/setup.bash
+   rosrun ros_opencv camera_publisher.py
+3/ source ~/ros_open_cv_ws/devel/setup.bash
+   rosrun ros_opencv camera_subscriber.py
+
+-------------------------------------------------------
+# ROS differential wheeled robot - https://www.youtube.com/watch?v=-4xYOcmnJUQ&t
+

@@ -5,7 +5,7 @@ import numpy as np
 import cvzone
 
 # Webcam
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # cv2.CAP_DSHOW for faster loading
+cap = cv2.VideoCapture(2, cv2.CAP_DSHOW)  # cv2.CAP_DSHOW for faster loading
 cap.set(3, 960)  # width
 cap.set(4, 640)  # height
 
