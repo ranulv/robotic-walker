@@ -1,3 +1,5 @@
+# original code - do not edit
+
 import random
 import cv2
 from cvzone.HandTrackingModule import HandDetector
