@@ -1,3 +1,5 @@
+# original code - do not edit
+
 import cv2
 from cvzone.HandTrackingModule import HandDetector
 import math
@@ -38,7 +40,7 @@ while True:
     if hands:
         lmList = hands[0]['lmList']
         x, y, w, h = hands[0]['bbox']
-        x1, y1 = lmList[5]
+        x1, y1 = lmList[5]                  # too many values to unpack
         x2, y2 = lmList[17]
 
         distance = int(math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2))
