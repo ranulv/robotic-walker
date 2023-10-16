@@ -3,11 +3,11 @@
 import cv2
 from cvzone.HandTrackingModule import HandDetector
 import math
-import numpy as np
+import numpy as np 
 import cvzone
 
 # Webcam
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # cv2.CAP_DSHOW for faster loading
+cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)  # cv2.CAP_DSHOW for faster loading
 # Check if the camera opened successfully
 if not cap.isOpened():
     print("Error: Could not open camera.")
