@@ -107,7 +107,7 @@ catkin_make
 source ~/ros_open_cv_ws/devel/setup.bash
 echo $ROS_PACKAGE_PATH 	# should return the ws/src
 
-#create catkin package
+# create catkin package
 cd ~/ros_open_cv_ws/src
 catkin_create_pkg ros_opencv image_transport cv_bridge sensor_msgs rospy roscpp std_msgs
 cd ~/ros_open_cv_ws/src/ros_opencv
@@ -135,5 +135,25 @@ catkin_make
    rosrun ros_opencv camera_subscriber.py
 
 -------------------------------------------------------
-# ROS differential wheeled robot - https://www.youtube.com/watch?v=-4xYOcmnJUQ&t
+### ROS differential wheeled robot - https://www.youtube.com/watch?v=-4xYOcmnJUQ&t
+
+# create workspace
+mkdir -p ~/ros_remote_ws/src
+cd ros_remote_ws/
+catkin_make
+source ~/ros_remote_ws/devel/setup.bash
+
+# create catkin package
+cd ~/ros_remote_ws/src
+catkin_create_pkg ros_remote_pkg rospy roscpp std_msgs
+roscd ros_remote_pkg/src
+gedit publisherArduino.py
+chmod +x publisherArduino.py
+gedit subscriberArduino.py
+chmod +x subscriberArduino.py
+
+cd ros_open_cv_ws
+catkin_make
+
+
 
