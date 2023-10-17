@@ -1,6 +1,7 @@
-#include <ros.h>
-#include <std_msgs/Int32.h>
+#include <ros.h> // include the ROS library
+#include <std_msgs/Int32.h> // include the standard ROS message type for integers
 
+// define the pins used for the encoders and motor drivers
 int encoderPinLeft = 2;
 int encoderPinRight = 3;
 
@@ -12,14 +13,17 @@ int ENA = 5;
 int IN1 = 6;
 int IN2 = 7;
 
+// define variables to keep track of the encoder pulse counts and motor velocities
 volatile unsigned long totalPulseLeft = 0;
 volatile unsigned long totalPulseRight = 0;
 
 int motorVelocityLeft = 0;
 int motorVelocityRight = 0;
 
+// create a ROS node handle
 ros::NodeHandle nh;
 
+// define callback functions for the motor velocity ROS messages
 void callBackFunctionMotorLeft(const std_msgs::Int32 &motorvelocityLeftROS){
   motorVelocityLeft=motorvelocityLeftROS.data;
 }
@@ -27,22 +31,27 @@ void callBackFunctionMotorRight(const std_msgs::Int32 &motorvelocityRightROS){
   motorVelocityRight=motorvelocityRightROS.data;
 }
 
+// create ROS message objects for the encoder pulse counts
 std_msgs::Int32 leftEncoderROS;
 ros::Publisher leftEncoderROSPublisher("left_encoder_pulses", &leftEncoderROS);
 
-std_msgs::Int32 RightEncoderROS;
-ros::Publisher RightEncoderROSPublisher("Right_encoder_pulses", &RightEncoderROS);
+std_msgs::Int32 rightEncoderROS;
+ros::Publisher rightEncoderROSPublisher("right_encoder_pulses", &rightEncoderROS);
 
-ros::Subscriber<std_msgs::Int32> leftMotorROSSubscriber('left_motor_velocity',&callBackFunctionMotorLeft);
-ros::Subscriber<std_msgs::Int32> rightMotorROSSubscriber('right_motor_velocity',&callBackFunctionMotorRight);
+// create ROS subscribers for the motor velocity messages
+ros::Subscriber<std_msgs::Int32> leftMotorROSSubscriber("left_motor_velocity",&callBackFunctionMotorLeft);
+ros::Subscriber<std_msgs::Int32> rightMotorROSSubscriber("right_motor_velocity",&callBackFunctionMotorRight);
 
 void setup() {
+  // set the encoder pins as inputs
   pinMode(encoderPinLeft,INPUT);
   pinMode(encoderPinRight,INPUT);
 
-  attachInterrupt(digitalPintoInterrupt(encoderPinLeft),interruptFunctionLeft,RISING);
-  attachInterrupt(digitalPintoInterrupt(encoderPinRight),interruptFunctionRight,RISING);
+  // attach interrupt functions to the encoder pins
+  attachInterrupt(digitalPinToInterrupt(encoderPinLeft),InterruptFunctionLeft,RISING);
+  attachInterrupt(digitalPinToInterrupt(encoderPinRight), InterruptFunctionRight,RISING);
 
+  // set the motor driver pins as outputs
   pinMode(ENA, OUTPUT);
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT);
@@ -51,44 +60,53 @@ void setup() {
   pinMode(IN4, OUTPUT);
   pinMode(ENB, OUTPUT);
   
-  // Set all motors to OFF
+  // set all motors to OFF
   digitalWrite(IN1, LOW);
   digitalWrite(IN2, LOW);
  
   digitalWrite(IN3, LOW);
   digitalWrite(IN4, LOW);
 
-  nh.getHardware() -> setBaud(9600);
+  // initialize the ROS node and set the baud rate
+  nh.getHardware()->setBaud(9600);
   nh.initNode();
 
+  // advertise the encoder pulse count publishers
   nh.advertise(leftEncoderROSPublisher);
   nh.advertise(rightEncoderROSPublisher);
 
-  nh.subsribe(leftEncoderROSSubscriber);
-  nh.subsribe(rightEncoderROSSubscriber);
+  // subscribe to the motor velocity messages
+  nh.subscribe(leftMotorROSSubscriber);
+  nh.subscribe(rightMotorROSSubscriber);
 }
  
 void loop() {
+  // update the ROS node
   nh.spinOnce();
-  // Set the speed of the motor (PWM signals) from 0 to 255
+
+  // set the motor speeds based on the received velocity commands
   analogWrite(ENA, motorVelocityLeft);
   analogWrite(ENB, motorVelocityRight);
  
+  // set the motor directions to forward
   digitalWrite(IN1,LOW);
   digitalWrite(IN2, HIGH);
   
-  // Set the direction and turn ON
+  // turn the motors on
   digitalWrite(IN3, LOW);
   digitalWrite(IN4, HIGH);
 
+  // publish the encoder pulse counts as ROS messages
   leftEncoderROS.data = totalPulseLeft;
   rightEncoderROS.data = totalPulseRight;
   leftEncoderROSPublisher.publish(&leftEncoderROS);
   rightEncoderROSPublisher.publish(&rightEncoderROS);
 
+  // delay to prevent overloading the system
   delay(5);
 }
 
+// interrupt functions for the encoder pins
 void InterruptFunctionLeft(){
   totalPulseLeft = totalPulseLeft + 1;
 }
